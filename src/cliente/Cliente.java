@@ -13,51 +13,50 @@ public class Cliente {
 	private byte[] buffer;
 	private int bytesRead;
 	
-	public Cliente() {
+	public Cliente(String url, int port, String arquivo) {
+		conecta(url, port);
+		recebeArquivo(arquivo);
+		encerraConexoes();
+	}
+
+	private void conecta(String url, int port){
 		try {
-			socket = new Socket("localhost", 3377);
+			socket = new Socket(url, port);
 			input = socket.getInputStream();
-			System.out.println("Conectado ao servidor.");
-			
-			fileOut = new FileOutputStream("/tmp/novoarquivo.zip");
-			
-			buffer = new byte[1024];
-			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Conectado ao servidor.");
+	}
+	
+	private void recebeArquivo(String arquivo){
+		buffer = new byte[1024];
+		arquivo = "/tmp/"+arquivo;
+		try {
+			fileOut = new FileOutputStream(arquivo);
 			while((bytesRead = input.read(buffer)) != -1){
 				fileOut.write(buffer, 0, bytesRead);
 				fileOut.flush();
 				System.out.println("Recebendo...");
 			}
-			
 			System.out.println("Arquivo recebido.");
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
-			if(socket != null){
-				try {
-					socket.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-			if(fileOut != null){
-				try {
-					fileOut.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-			if(input != null){
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
-
+	
+	private void encerraConexoes(){
+		try {
+			input.close();
+			fileOut.close();
+			socket.close();
+			System.out.println("Conexões encerradas.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args){
-		new Cliente();
+		new Cliente("localhost", 3377, "jperf-2.0.0.zip");
 	}
 }
