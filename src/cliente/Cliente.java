@@ -1,5 +1,6 @@
 package cliente;
 
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,7 @@ public class Cliente {
 
 	private Socket socket;
 	private FileOutputStream fileOut;
+	private BufferedOutputStream fileOut2;
 	private InputStream input;
 	private byte[] buffer;
 	private int bytesRead;
@@ -31,12 +33,13 @@ public class Cliente {
 	
 	private void recebeArquivo(String arquivo){
 		buffer = new byte[1024];
-		arquivo = "/tmp/"+arquivo;
+		arquivo = "/home/maykon/testeTransmissao/"+arquivo;
 		try {
 			fileOut = new FileOutputStream(arquivo);
+			fileOut2 = new BufferedOutputStream(fileOut);
 			while((bytesRead = input.read(buffer)) != -1){
-				fileOut.write(buffer, 0, bytesRead);
-				fileOut.flush();
+				fileOut2.write(buffer, 0, bytesRead);
+				fileOut2.flush();
 				System.out.println("Recebendo...");
 			}
 			System.out.println("Arquivo recebido.");
@@ -48,7 +51,7 @@ public class Cliente {
 	private void encerraConexoes(){
 		try {
 			input.close();
-			fileOut.close();
+			fileOut2.close();
 			socket.close();
 			System.out.println("Conexões encerradas.");
 		} catch (IOException e) {
@@ -57,6 +60,6 @@ public class Cliente {
 	}
 	
 	public static void main(String[] args){
-		new Cliente("localhost", 3377, "jperf-2.0.0.zip");
+		new Cliente("10.42.0.30", 3377, "phpStorm.tar.gz");
 	}
 }
