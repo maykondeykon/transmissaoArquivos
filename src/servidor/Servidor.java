@@ -1,5 +1,6 @@
 package servidor;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ public class Servidor {
 	private OutputStream socketOut;
 	private ServerSocket servSocket;
 	private FileInputStream fileIn;
+	private BufferedInputStream fileIn3;
 	private byte[] buffer;
 	private int bytesRead;
 	private File file;
@@ -39,7 +41,8 @@ public class Servidor {
 		buffer = new byte[1024];
 		file = new File(arquivo);
 		try {
-			fileIn = new FileInputStream(file);
+			FileInputStream fileIn2 = new FileInputStream(file);
+			fileIn3 = new BufferedInputStream(fileIn2);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -48,7 +51,7 @@ public class Servidor {
 	private void enviaArquivo(){
 		try {
 			socketOut = socket.getOutputStream();
-			while((bytesRead = fileIn.read(buffer))!= -1){
+			while((bytesRead = fileIn3.read(buffer))!= -1){
 				socketOut.write(buffer, 0, bytesRead);
 				socketOut.flush();
 				System.out.println("Enviando...");
@@ -61,7 +64,7 @@ public class Servidor {
 	
 	private void encerraConexoes(){
 		try {
-			fileIn.close();
+			fileIn3.close();
 			socketOut.close();
 			socket.close();
 			servSocket.close();
@@ -72,6 +75,6 @@ public class Servidor {
 	}
 	
 	public static void main(String[] args){
-		new Servidor("/home/maykon/Downloads/jperf-2.0.0.zip");
+		new Servidor("/home/maykon/Documentos/Pro/_LINUX/PhpStorm-10.0.3.tar.gz");
 	}
 }
