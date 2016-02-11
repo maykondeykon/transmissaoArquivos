@@ -75,6 +75,6 @@ public class Servidor {
 	}
 	
 	public static void main(String[] args){
-		new Servidor("/home/maykon/Documentos/Pro/_LINUX/PhpStorm-10.0.3.tar.gz");
+		new Servidor("/home/maykon/Pro/PhpStorm-9.0.2.tar.gz");
 	}
 }
